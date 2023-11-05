@@ -24,7 +24,11 @@ export class GithubOauthStrategy extends PassportStrategy(Strategy, 'github') {
     });
   }
 
-  async validate(accessToken: string, _refreshToken: string, profile: Profile) {
+  async validate(
+    githubAccessToken: string,
+    _refreshToken: string,
+    profile: Profile,
+  ) {
     // github oauth는 refreshToken을 제공하지 않는다.
     const { login: githubId, email, avatar_url } = profile._json;
 
@@ -35,12 +39,13 @@ export class GithubOauthStrategy extends PassportStrategy(Strategy, 'github') {
       password: null,
       avatarUrl: avatar_url,
       isGithub: true,
-      // githubAccessToken: accessToken,
+      githubAccessToken,
     };
-    // const updateAccessTokenInput: InputGithubAccessTokenUpdateDto = {
-    // email,
-    // githubAccessToken: accessToken,
-    // };
+
+    const updateAccessTokenInput: InputGithubAccessTokenUpdateDto = {
+      email,
+      githubAccessToken,
+    };
 
     const { item: user } = await this.userService.findUser(findUserInput);
 
@@ -51,10 +56,10 @@ export class GithubOauthStrategy extends PassportStrategy(Strategy, 'github') {
       const { item } = await this.userService.createUser(createUserInput);
       createdUser = item;
     } else {
-      // const UpdateResult = await this.userService.updateGithubAccessToken(
-      // updateAccessTokenInput,
-      // );
-      // Logger.log(`Github accessToken 업데이트: ${UpdateResult.item}`);
+      const UpdateResult = await this.userService.updateGithubAccessToken(
+        updateAccessTokenInput,
+      );
+      Logger.log(`Github accessToken 업데이트: ${UpdateResult.item}`);
     }
 
     // 기존 유저도 없고 생성된 유저도 없으면 에러 발생
@@ -62,8 +67,9 @@ export class GithubOauthStrategy extends PassportStrategy(Strategy, 'github') {
       throw new UnauthorizedException();
     }
 
-    const jwtToken = await this.authService.signIn(email);
-    console.log(jwtToken);
+    const { access_token: accessToken } = await this.authService.signIn(email);
+    console.log(accessToken);
+    console.log(githubAccessToken);
 
     return { user, accessToken } || { createdUser, accessToken };
   }
