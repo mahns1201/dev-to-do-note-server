@@ -57,12 +57,13 @@ export class UserService {
     input: InputGithubAccessTokenUpdateDto,
   ): Promise<ServiceResultDto<UpdateResult>> {
     const { email, githubAccessToken } = input;
-    console.log('user.service email: ', email);
 
     const user = await this.userRepository.update(
       { email },
       { githubAccessToken },
     );
+
+    console.log(user);
 
     return { item: user };
   }

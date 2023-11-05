@@ -56,10 +56,8 @@ export class GithubOauthStrategy extends PassportStrategy(Strategy, 'github') {
       const { item } = await this.userService.createUser(createUserInput);
       createdUser = item;
     } else {
-      const UpdateResult = await this.userService.updateGithubAccessToken(
-        updateAccessTokenInput,
-      );
-      Logger.log(`Github accessToken 업데이트: ${UpdateResult.item}`);
+      await this.userService.updateGithubAccessToken(updateAccessTokenInput);
+      Logger.log(`${user.email} Github accessToken 업데이트`);
     }
 
     // 기존 유저도 없고 생성된 유저도 없으면 에러 발생
