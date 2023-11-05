@@ -68,8 +68,6 @@ export class GithubOauthStrategy extends PassportStrategy(Strategy, 'github') {
     }
 
     const { access_token: accessToken } = await this.authService.signIn(email);
-    console.log(accessToken);
-    console.log(githubAccessToken);
 
     return { user, accessToken } || { createdUser, accessToken };
   }

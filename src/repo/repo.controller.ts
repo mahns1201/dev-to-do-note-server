@@ -9,13 +9,17 @@ import {
   Param,
   Post,
   Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RepoService } from './repo.service';
 import { UserService } from 'src/user/user.service';
 import { InputFindUserReposDto } from './dto/find-user-repo.dto';
+import { AuthGuard } from 'src/auth/jwt/auth.guard';
 
 @Controller('repo')
+@UseGuards(AuthGuard)
 @ApiTags('repository')
 export class RepoController {
   constructor(
@@ -25,10 +29,15 @@ export class RepoController {
 
   @Get('/:email')
   @HttpCode(HttpStatus.OK)
-  async findUserRepos(@Param() input: InputFindUserReposDto) {
+  async findUserRepos(
+    @Request() request,
+    @Param() input: InputFindUserReposDto,
+  ) {
     const {
       item: { id: userId },
     } = await this.userService.findUser(input);
+
+    console.log(request.user);
 
     const { items } = await this.repoService.findUserRepos(userId);
 
