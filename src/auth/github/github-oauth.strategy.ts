@@ -7,12 +7,14 @@ import { InputFindUserDto } from 'src/user/dto/find-user.dto';
 import { InputGithubAccessTokenUpdateDto } from 'src/user/dto/update-user.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
+import { AuthService } from '../jwt/auth.service';
 
 @Injectable()
 export class GithubOauthStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(
     private configService: ConfigService,
     private userService: UserService,
+    private authService: AuthService,
   ) {
     super({
       clientID: configService.get<string>('GITHUB_CLIENT_ID'),
@@ -59,6 +61,9 @@ export class GithubOauthStrategy extends PassportStrategy(Strategy, 'github') {
     if (!user && !createdUser) {
       throw new UnauthorizedException();
     }
+
+    const jwtToken = await this.authService.signIn(email);
+    console.log(jwtToken);
 
     return { user, accessToken } || { createdUser, accessToken };
   }

@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { GithubOauthModule } from './auth/github/github-oauth.module';
 import { RepoModule } from './repo/repo.module';
+import { AuthModule } from './auth/jwt/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { RepoModule } from './repo/repo.module';
         synchronize: true,
       }),
     }),
+    AuthModule,
     GithubOauthModule,
     UserModule,
     RepoModule,
