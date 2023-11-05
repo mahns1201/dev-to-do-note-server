@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Logger,
@@ -25,7 +24,7 @@ export class RepoController {
     private userService: UserService,
   ) {}
 
-  @Get('/:email')
+  @Get()
   @HttpCode(HttpStatus.OK)
   async findUserRepos(@Request() request) {
     const { id: userId } = request.user;
@@ -57,10 +56,15 @@ export class RepoController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: '유저 레포지토리 리스트 조회에 실패했습니다.',
   })
-  async getReposFromGithub(@Headers() headers) {
-    const { authorization } = headers;
+  async getReposFromGithub(@Request() request) {
+    const { email } = request.user;
+    const {
+      item: { githubAccessToken },
+    } = await this.userService.findUser({ email });
 
-    const { items } = await this.repoService.getReposFromGithub(authorization);
+    const { items } = await this.repoService.getReposFromGithub(
+      githubAccessToken,
+    );
     const httpStatus = !items
       ? HttpStatus.INTERNAL_SERVER_ERROR
       : HttpStatus.OK;
