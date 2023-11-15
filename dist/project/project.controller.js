@@ -9,27 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthService = void 0;
+exports.ProjectController = void 0;
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
-const user_service_1 = require("../../user/user.service");
-let AuthService = class AuthService {
-    constructor(userService, jwtService) {
-        this.userService = userService;
-        this.jwtService = jwtService;
-    }
-    async signIn(email) {
-        const { item: user } = await this.userService.findUser({ email });
-        const payload = { id: user.id, email: user.email, username: user.githubId };
-        return {
-            access_token: await this.jwtService.signAsync(payload),
-        };
+const project_service_1 = require("./project.service");
+const swagger_1 = require("@nestjs/swagger");
+let ProjectController = class ProjectController {
+    constructor(projectService) {
+        this.projectService = projectService;
     }
 };
-AuthService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [user_service_1.UserService,
-        jwt_1.JwtService])
-], AuthService);
-exports.AuthService = AuthService;
-//# sourceMappingURL=auth.service.js.map
+ProjectController = __decorate([
+    (0, common_1.Controller)('project'),
+    (0, swagger_1.ApiTags)('project'),
+    __metadata("design:paramtypes", [project_service_1.ProjectService])
+], ProjectController);
+exports.ProjectController = ProjectController;
+//# sourceMappingURL=project.controller.js.map

@@ -3,5 +3,6 @@ export declare const REQUEST_INFO: {
         PREFIX: string;
         API_VERSION: string;
         CONTENT_TYPE: string;
+        ACCEPT: string;
     };
 };

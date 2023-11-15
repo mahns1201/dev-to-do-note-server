@@ -6,6 +6,7 @@ exports.REQUEST_INFO = {
         PREFIX: 'https://api.github.com',
         API_VERSION: '2022-11-28',
         CONTENT_TYPE: 'application/json; charset=utf-8',
+        ACCEPT: 'application/vnd.github+json',
     },
 };
 //# sourceMappingURL=request-url.js.map

@@ -16,6 +16,7 @@ const repo_module_1 = require("./repo/repo.module");
 const auth_module_1 = require("./auth/jwt/auth.module");
 const task_module_1 = require("./task/task.module");
 const upload_module_1 = require("./upload/upload.module");
+const project_module_1 = require("./project/project.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -42,6 +43,7 @@ AppModule = __decorate([
             user_module_1.UserModule,
             repo_module_1.RepoModule,
             task_module_1.TaskModule,
+            project_module_1.ProjectModule,
             upload_module_1.UploadModule,
         ],
         controllers: [],

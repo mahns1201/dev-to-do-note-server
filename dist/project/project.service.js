@@ -8,28 +8,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthService = void 0;
+exports.ProjectService = void 0;
+const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
-const user_service_1 = require("../../user/user.service");
-let AuthService = class AuthService {
-    constructor(userService, jwtService) {
-        this.userService = userService;
-        this.jwtService = jwtService;
-    }
-    async signIn(email) {
-        const { item: user } = await this.userService.findUser({ email });
-        const payload = { id: user.id, email: user.email, username: user.githubId };
-        return {
-            access_token: await this.jwtService.signAsync(payload),
-        };
+const typeorm_1 = require("typeorm");
+const typeorm_2 = require("@nestjs/typeorm");
+const project_entity_1 = require("./entity/project.entity");
+let ProjectService = class ProjectService {
+    constructor(projectRepository, httpService) {
+        this.projectRepository = projectRepository;
+        this.httpService = httpService;
     }
 };
-AuthService = __decorate([
+ProjectService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [user_service_1.UserService,
-        jwt_1.JwtService])
-], AuthService);
-exports.AuthService = AuthService;
-//# sourceMappingURL=auth.service.js.map
+    __param(0, (0, typeorm_2.InjectRepository)(project_entity_1.ProjectEntity)),
+    __metadata("design:paramtypes", [typeorm_1.Repository,
+        axios_1.HttpService])
+], ProjectService);
+exports.ProjectService = ProjectService;
+//# sourceMappingURL=project.service.js.map
