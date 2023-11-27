@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { REQUEST_INFO } from 'src/common/request-url';
 import { Repository } from 'typeorm';
@@ -15,10 +14,18 @@ export class RepoService {
 
     @InjectRepository(RepoBranchEntity)
     private repoBranchRepository: Repository<RepoBranchEntity>,
-
-    private httpService: HttpService,
   ) {}
 
+  // ********** repo **********
+  async findRepo(repoId) {
+    const result = await this.repoRepository.findOne({
+      where: {
+        id: repoId,
+      },
+    });
+
+    return result;
+  }
   async findReposByUserId(userId) {
     const result = await this.repoRepository.findAndCount({
       where: {
@@ -38,6 +45,18 @@ export class RepoService {
     });
 
     return userRepo;
+  }
+
+  // ********** repoBranch **********
+
+  async findRepoBranch(repoBranchId) {
+    const result = await this.repoBranchRepository.findOne({
+      where: {
+        id: repoBranchId,
+      },
+    });
+
+    return result;
   }
 
   async findRepoBranchesByRepoId(repoId) {
