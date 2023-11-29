@@ -19,6 +19,8 @@ import {
 import { OutputFindUserDto } from './dto/find-user.dto';
 import { AuthGuard } from 'src/auth/jwt/auth.guard';
 import { ErrorResponseDto } from 'src/common/common.dto';
+import { User } from 'src/decorator/user.decorator';
+import { jwtUserT } from 'src/constant/jwt.constant';
 
 @Controller('user')
 @ApiBearerAuth('accessToken')
@@ -42,8 +44,8 @@ export class UserController {
     type: ErrorResponseDto,
     status: HttpStatus.NOT_FOUND,
   })
-  async findOne(@Request() request): Promise<OutputFindUserDto> {
-    const { id } = request.user;
+  async findOne(@User() jUser: jwtUserT): Promise<OutputFindUserDto> {
+    const { id } = jUser;
 
     const { item: user } = await this.userService.findOne({ id });
     const { password, githubAccessToken, ...outputUser } = user;
