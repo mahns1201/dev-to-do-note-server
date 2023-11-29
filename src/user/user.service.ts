@@ -16,7 +16,7 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async createUser(
+  async create(
     input: InputCreateUserDto,
   ): Promise<ServiceResultDto<UserEntity>> {
     const {
@@ -37,11 +37,11 @@ export class UserService {
       githubAccessToken,
     });
 
-    const result = await this.userRepository.save(newUser);
+    const savedUser = await this.userRepository.save(newUser);
 
     Logger.log(`유저: ${email} 회원가입 완료`);
 
-    return { item: result };
+    return { item: savedUser };
   }
 
   async findOne(id): Promise<ServiceResultDto<UserEntity>> {

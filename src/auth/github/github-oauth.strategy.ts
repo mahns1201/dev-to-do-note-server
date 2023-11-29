@@ -53,7 +53,7 @@ export class GithubOauthStrategy extends PassportStrategy(Strategy, 'github') {
     // TODO 1. 비밀번호 난수 생성 필요.
     let createdUser: UserEntity;
     if (!user) {
-      const { item } = await this.userService.createUser(createUserInput);
+      const { item } = await this.userService.create(createUserInput);
       createdUser = item;
     } else {
       await this.userService.updateGithubAccessToken(updateAccessTokenInput);

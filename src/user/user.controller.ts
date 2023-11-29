@@ -44,19 +44,19 @@ export class UserController {
   })
   async findOne(@Request() request): Promise<OutputFindUserDto> {
     const { id: userId } = request.user;
-    const httpStatus = HttpStatus.OK;
-    const message = '유저를 성공적으로 찾았습니다';
 
-    const {
-      item: { password, githubAccessToken, ...outputUser },
-    } = await this.userService.findOne(userId);
+    const { item: user } = await this.userService.findOne(userId);
+    const { password, githubAccessToken, ...outputUser } = user;
 
-    const t = false;
-    if (!t) {
+    if (!user) {
       throw new NotFoundException('유저를 찾을 수 없습니다.');
     }
 
-    return { item: outputUser, httpStatus, message };
+    return {
+      item: outputUser,
+      httpStatus: HttpStatus.OK,
+      message: '유저를 성공적으로 찾았습니다',
+    };
   }
 }
 
@@ -79,7 +79,7 @@ export class UserController {
 // async create(
 //   @Body() input: InputCreateUserDto,
 // ): Promise<OutputCreateUserDto> {
-//   const { item } = await this.userService.createUser(input);
+//   const { item } = await this.userService.create(input);
 //   const httpStatus = !item
 //     ? HttpStatus.INTERNAL_SERVER_ERROR
 //     : HttpStatus.CREATED;

@@ -73,7 +73,7 @@ export class GithubOauthService {
     // email로 가입된 유저가 없으면 생성.
     let createdUser: UserEntity;
     if (!user) {
-      const { item } = await this.userService.createUser(createUserInput);
+      const { item } = await this.userService.create(createUserInput);
       createdUser = item;
       Logger.log(`유저: ${email} 깃허브 로그인으로 회원가입 완료`);
     } else {
