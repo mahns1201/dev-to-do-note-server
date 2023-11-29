@@ -8,16 +8,16 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
-  ApiHeader,
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { OutputFindUserDto } from './dto/find-user.dto';
 import { AuthGuard } from 'src/auth/jwt/auth.guard';
 
 @Controller('user')
+@ApiBearerAuth('accessToken')
 @ApiTags('USER')
 export class UserController {
   constructor(private userService: UserService) {}
@@ -25,10 +25,6 @@ export class UserController {
   @Get()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'JWT 토큰을 Bearer로 해더에 담아서 요청',
-  })
   @ApiOperation({ description: 'JWT 토큰으로 유저를 조회한다.' })
   @ApiOkResponse({
     type: OutputFindUserDto,
@@ -46,9 +42,7 @@ export class UserController {
       ? '유저를 찾을 수 없습니다.'
       : '유저를 성공적으로 찾았습니다.';
 
-    const result = { item: outputUser, httpStatus, message };
-
-    return result;
+    return { item: outputUser, httpStatus, message };
   }
 }
 
