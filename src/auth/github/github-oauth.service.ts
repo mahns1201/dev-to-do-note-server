@@ -53,7 +53,7 @@ export class GithubOauthService {
     // github oauth는 refreshToken을 제공하지 않는다.
     const { login: githubId, avatar_url } = profile;
 
-    const findUserInput: InputFindUserDto = { email };
+    const findUserInput = { email };
     const createUserInput: InputCreateUserDto = {
       email,
       githubId,

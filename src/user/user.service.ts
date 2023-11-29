@@ -44,7 +44,10 @@ export class UserService {
     return { item: savedUser };
   }
 
-  async findOne(id): Promise<ServiceResultDto<UserEntity>> {
+  async findOne(
+    input: InputFindUserDto,
+  ): Promise<ServiceResultDto<UserEntity>> {
+    const { id } = input;
     const user = await this.userRepository.findOne({
       where: {
         id,
@@ -58,9 +61,7 @@ export class UserService {
   /**
    * @deprecated
    */
-  async findUser(
-    input: InputFindUserDto,
-  ): Promise<ServiceResultDto<UserEntity>> {
+  async findUser(input): Promise<ServiceResultDto<UserEntity>> {
     const { email } = input;
     const user = await this.userRepository.findOne({
       where: {

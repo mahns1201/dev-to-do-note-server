@@ -43,9 +43,9 @@ export class UserController {
     status: HttpStatus.NOT_FOUND,
   })
   async findOne(@Request() request): Promise<OutputFindUserDto> {
-    const { id: userId } = request.user;
+    const { id } = request.user;
 
-    const { item: user } = await this.userService.findOne(userId);
+    const { item: user } = await this.userService.findOne({ id });
     const { password, githubAccessToken, ...outputUser } = user;
 
     if (!user) {
