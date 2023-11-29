@@ -48,6 +48,7 @@ export class UserService {
     const user = await this.userRepository.findOne({
       where: {
         id,
+        deletedAt: null,
       },
     });
 

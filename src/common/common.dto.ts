@@ -20,6 +20,11 @@ export class BaseResponseDto {
   message: string;
 }
 
+export class ErrorResponseDto extends BaseResponseDto {
+  @ApiProperty({ description: 'error 메시지' })
+  error: string;
+}
+
 export interface ServiceResultDto<T> {
   items?: T;
   item?: T;

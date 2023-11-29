@@ -3,18 +3,22 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
   ApiBearerAuth,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { OutputFindUserDto } from './dto/find-user.dto';
 import { AuthGuard } from 'src/auth/jwt/auth.guard';
+import { ErrorResponseDto } from 'src/common/common.dto';
 
 @Controller('user')
 @ApiBearerAuth('accessToken')
@@ -25,22 +29,32 @@ export class UserController {
   @Get()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ description: 'JWT 토큰으로 유저를 조회한다.' })
+  @ApiOperation({ summary: 'JWT 토큰으로 유저를 조회한다.' })
   @ApiOkResponse({
     type: OutputFindUserDto,
     status: HttpStatus.OK,
-    description: '유저',
+  })
+  @ApiUnauthorizedResponse({
+    type: ErrorResponseDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+    status: HttpStatus.NOT_FOUND,
   })
   async findOne(@Request() request): Promise<OutputFindUserDto> {
     const { id: userId } = request.user;
+    const httpStatus = HttpStatus.OK;
+    const message = '유저를 성공적으로 찾았습니다';
 
     const {
       item: { password, githubAccessToken, ...outputUser },
     } = await this.userService.findOne(userId);
-    const httpStatus = !outputUser ? HttpStatus.NOT_FOUND : HttpStatus.OK;
-    const message = !outputUser
-      ? '유저를 찾을 수 없습니다.'
-      : '유저를 성공적으로 찾았습니다.';
+
+    const t = false;
+    if (!t) {
+      throw new NotFoundException('유저를 찾을 수 없습니다.');
+    }
 
     return { item: outputUser, httpStatus, message };
   }
