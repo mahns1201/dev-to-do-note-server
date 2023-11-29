@@ -66,7 +66,9 @@ export class RepoController {
     const { id: userId, username: owner } = request.user;
     const { repoName } = body;
 
-    const { githubAccessToken } = await this.userService.findOne(userId);
+    const {
+      item: { githubAccessToken },
+    } = await this.userService.findOne(userId);
 
     const githubRepoBranches = await this.repoService.getRepoBranchesFromGithub(
       githubAccessToken,
@@ -111,7 +113,7 @@ export class RepoController {
   })
   async syncRepos(@Request() request) {
     const { id: userId, username, email } = request.user;
-    const user = await this.userService.findOne(userId);
+    const { item: user } = await this.userService.findOne(userId);
     const { githubAccessToken } = user;
     if (!githubAccessToken) {
       Logger.error(`유저 [${email}]의 github accessToken이 없습니다.`);
