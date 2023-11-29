@@ -48,6 +48,7 @@ export class UserController {
     const { id } = jUser;
 
     const { item: user } = await this.userService.findOne({ id });
+    // eslint-disable-next-line
     const { password, githubAccessToken, ...outputUser } = user;
 
     if (!user) {
@@ -55,9 +56,9 @@ export class UserController {
     }
 
     return {
-      item: outputUser,
       httpStatus: HttpStatus.OK,
       message: '유저를 성공적으로 찾았습니다',
+      item: outputUser,
     };
   }
 }
