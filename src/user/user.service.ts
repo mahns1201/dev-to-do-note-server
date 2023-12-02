@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { UserEntity } from './entity/user.entity';
@@ -56,6 +56,27 @@ export class UserService {
     });
 
     return { item: user };
+  }
+
+  async getGithubAccessToken(
+    input: InputFindUserDto,
+  ): Promise<ServiceResultDto<string>> {
+    const { id } = input;
+    const { githubAccessToken } = await this.userRepository.findOne({
+      where: {
+        id,
+        deletedAt: null,
+      },
+    });
+
+    if (!githubAccessToken) {
+      Logger.error(`유저 ${id}의 githubAccessToken을 얻을 수 없습니다.`);
+      throw new UnauthorizedException(
+        `유저 ${id}의 githubAccessToken을 얻을 수 없습니다.`,
+      );
+    }
+
+    return { item: githubAccessToken };
   }
 
   /**
