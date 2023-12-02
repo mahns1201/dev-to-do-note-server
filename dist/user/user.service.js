@@ -45,6 +45,9 @@ let UserService = class UserService {
                 deletedAt: null,
             },
         });
+        if (!user) {
+            throw new common_1.UnauthorizedException(`id: ${id} 유저를 찾을 수 없습니다.`);
+        }
         return { item: user };
     }
     async getGithubAccessToken(input) {

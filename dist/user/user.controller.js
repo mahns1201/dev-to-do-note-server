@@ -39,9 +39,6 @@ let UserController = class UserController {
         const { id } = jUser;
         const { item: user } = await this.userService.findOne({ id });
         const { password, githubAccessToken } = user, outputUser = __rest(user, ["password", "githubAccessToken"]);
-        if (!user) {
-            throw new common_1.NotFoundException('유저를 찾을 수 없습니다.');
-        }
         return {
             httpStatus: common_1.HttpStatus.OK,
             message: '유저를 성공적으로 찾았습니다',
