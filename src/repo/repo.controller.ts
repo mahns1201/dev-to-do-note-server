@@ -8,12 +8,14 @@ import {
   Post,
   Query,
   Request,
+  Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiHeader,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -28,7 +30,12 @@ import { AuthGuard } from 'src/auth/jwt/auth.guard';
 import { User } from 'src/decorator/user.decorator';
 import { jwtUserT } from 'src/constant/jwt.constant';
 import { OutputFindReposDto } from './dto/find-repo.dto';
-import { ErrorResponseDto, PagingRequestDto } from 'src/common/common.dto';
+import {
+  BaseResponseDto,
+  ErrorResponseDto,
+  PagingRequestDto,
+} from 'src/common/common.dto';
+import { Response } from 'express';
 
 @Controller('repo')
 @UseGuards(AuthGuard)
@@ -85,9 +92,28 @@ export class RepoController {
   }
 
   @Post('github/sync')
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '유저의 레포지토리/브랜치를 깃허브와 동기화 한다.' })
-  async syncRepoByGithub(@User() user: jwtUserT) {
+  @ApiOkResponse({
+    type: BaseResponseDto,
+    status: HttpStatus.OK,
+  })
+  @ApiCreatedResponse({
+    type: BaseResponseDto,
+    status: HttpStatus.OK,
+  })
+  @ApiUnauthorizedResponse({
+    type: ErrorResponseDto,
+    status: HttpStatus.UNAUTHORIZED,
+  })
+  @ApiInternalServerErrorResponse({
+    type: ErrorResponseDto,
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+  })
+  async syncRepoByGithub(@User() user: jwtUserT, @Res() res: Response) {
+    let message = '모두 동기화 완료 상태입니다.';
+    let httpStatus = HttpStatus.OK;
+
     const { id: userId, username } = user;
     const { item: githubAccessToken } =
       await this.userService.getGithubAccessToken({ id: userId });
@@ -97,26 +123,55 @@ export class RepoController {
       username,
     );
 
-    console.log(githubRepositories);
+    const { items: userRepos } = await this.repoService.find({
+      id: userId,
+      page: null,
+      limit: null,
+    });
 
-    // await this.repoService.find()
-    // const [userRepos] = await this.repoService.findReposByUserId(user);
+    const {
+      item: { syncRepoNames, syncCount: syncRepoCount },
+    } = await this.repoService.syncUserRepos(
+      userId,
+      githubRepositories,
+      userRepos,
+    );
 
-    // const {
-    //   item: { syncCount },
-    // } = await this.repoService.syncUserRepos(
-    //   userId,
-    //   githubRepositories,
-    //   userRepos,
-    // );
-    // const message = syncCount
-    //   ? `레포지토리 ${syncCount}개가 성공적으로 동기화 되었습니다.`
-    //   : '레포지토리 동기화 상태가 최신입니다.';
-    // const httpStatus = syncCount ? HttpStatus.CREATED : HttpStatus.OK;
+    if (syncRepoCount) {
+      message = `${syncRepoCount}개 레포지토리 동기화: [${syncRepoNames}]`;
+      httpStatus = HttpStatus.CREATED;
+    }
 
-    // return { message, httpStatus };
+    for (const repoName of syncRepoNames) {
+      const githubRepoBranches =
+        await this.repoService.getRepoBranchesFromGithub(
+          githubAccessToken,
+          username,
+          repoName,
+        );
 
-    return 'OK!';
+      const {
+        item: { id: repoId },
+      } = await this.repoService.findRepoByUserIdAndRepoName(userId, repoName);
+
+      const repoBranches = await this.repoService.findRepoBranchesByRepoId(
+        repoId,
+      );
+
+      const {
+        item: { syncBranchNames },
+      } = await this.repoService.syncRepoBranches(
+        repoId,
+        githubRepoBranches,
+        repoBranches,
+      );
+
+      if (syncBranchNames.length) {
+        message += `\n레포지토리 ${repoName}의 ${syncBranchNames.length}개 브랜치 동기화: [${syncBranchNames}]`;
+      }
+    }
+
+    res.status(httpStatus).json({ message, httpStatus });
   }
 
   // @Post('github/sync/branch')
@@ -124,32 +179,32 @@ export class RepoController {
   //   const { id: userId, username: owner } = request.user;
   //   const { repoName } = body;
 
-  //   const {
-  //     item: { githubAccessToken },
-  //   } = await this.userService.findOne(userId);
+  // const {
+  //   item: { githubAccessToken },
+  // } = await this.userService.findOne(userId);
 
-  //   const githubRepoBranches = await this.repoService.getRepoBranchesFromGithub(
-  //     githubAccessToken,
-  //     owner,
-  //     repoName,
-  //   );
+  // const githubRepoBranches = await this.repoService.getRepoBranchesFromGithub(
+  //   githubAccessToken,
+  //   owner,
+  //   repoName,
+  // );
 
-  //   const { id: repoId } = await this.repoService.findRepoByUserIdAndRepoName(
-  //     userId,
-  //     repoName,
-  //   );
+  // const { id: repoId } = await this.repoService.findRepoByUserIdAndRepoName(
+  //   userId,
+  //   repoName,
+  // );
 
-  //   const repoBranches = await this.repoService.findRepoBranchesByRepoId(
-  //     repoId,
-  //   );
+  // const repoBranches = await this.repoService.findRepoBranchesByRepoId(
+  //   repoId,
+  // );
 
-  //   const {
-  //     item: { syncCount },
-  //   } = await this.repoService.syncRepoBranches(
-  //     repoId,
-  //     githubRepoBranches,
-  //     repoBranches,
-  //   );
+  // const {
+  //   item: { syncCount },
+  // } = await this.repoService.syncRepoBranches(
+  //   repoId,
+  //   githubRepoBranches,
+  //   repoBranches,
+  // );
 
   //   const message = syncCount
   //     ? `레포지토리 ${repoName}의 브랜치 ${syncCount}개가 성공적으로 동기화 되었습니다.`
