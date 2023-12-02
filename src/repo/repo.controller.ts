@@ -6,18 +6,30 @@ import {
   HttpStatus,
   Logger,
   Post,
+  Query,
   Request,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiHeader,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { RepoService } from './repo.service';
 import { UserService } from 'src/user/user.service';
 import { AuthGuard } from 'src/auth/jwt/auth.guard';
+import { User } from 'src/decorator/user.decorator';
+import { jwtUserT } from 'src/constant/jwt.constant';
+import { OutputFindReposDto } from './dto/find-repo.dto';
+import { PagingRequestDto } from 'src/common/common.dto';
 
 @Controller('repo')
 @UseGuards(AuthGuard)
 @ApiTags('repository')
+@ApiBearerAuth('accessToken')
 export class RepoController {
   constructor(
     private repoService: RepoService,
@@ -26,28 +38,29 @@ export class RepoController {
 
   @Get('list')
   @HttpCode(HttpStatus.OK)
-  @ApiHeader({
-    name: 'JWT',
-    description: 'Bearer JWT 토큰을 해더에 담아서 요청',
+  @ApiOperation({ summary: '유저의 레포지토리 리스트를 조회한다.' })
+  @ApiOkResponse({
+    type: OutputFindReposDto,
+    status: HttpStatus.OK,
   })
-  @ApiOperation({
-    summary: '유저 레파지토리 리스트 조회',
-    description: 'DB에 저장되어 있는 유저 레파지토리 리스트를 조회한다.',
-  })
-  async findUserRepos(@Request() request) {
-    const { id: userId } = request.user;
-    const [userRepos, totalCount] = await this.repoService.findReposByUserId(
-      userId,
-    );
-    const httpStatus = !userRepos ? HttpStatus.NOT_FOUND : HttpStatus.OK;
-    const message = !userRepos
-      ? '유저의 레포지토리를 찾을 수 없습니다.'
-      : '유저의 레포지토리를 성공적으로 가지고 왔습니다.';
+  async findUserRepos(
+    @User() user: jwtUserT,
+    @Query() query: PagingRequestDto,
+  ) {
+    const { page, limit } = query;
+    const [userRepos, totalCount] = await this.repoService.find({
+      id: user.id,
+      page,
+      limit,
+    });
 
     return {
-      message,
-      httpStatus,
-      items: { userRepos, totalCount },
+      httpStatus: HttpStatus.OK,
+      message: '레포지토리 리스트를 성공적으로 조회했습니다.',
+      items: { userRepos },
+      currentPage: page,
+      limit,
+      totalCount,
     };
   }
 
@@ -130,7 +143,7 @@ export class RepoController {
     const {
       item: { syncCount },
     } = await this.repoService.syncUserRepos(
-      user,
+      userId,
       githubRepositories,
       userRepos,
     );

@@ -5,6 +5,7 @@ import { RepoEntity } from './entity/repo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RepoBranchEntity } from './entity/repo-branch.entity';
 import { Octokit } from 'octokit';
+import { InputFindReposDto } from './dto/find-repo.dto';
 
 @Injectable()
 export class RepoService {
@@ -17,6 +18,32 @@ export class RepoService {
   ) {}
 
   // ********** repo **********
+  async create(input) {
+    const { user, repoName } = input;
+
+    const newRepo = this.repoRepository.create({
+      user,
+      repoName,
+    });
+
+    const savedRepo = await this.repoRepository.save(newRepo);
+
+    return { item: savedRepo };
+  }
+
+  async find(input: InputFindReposDto) {
+    const { id: userId, page, limit } = input;
+
+    const result = await this.repoRepository
+      .createQueryBuilder('repo')
+      .where('userId = :userId', { userId })
+      .offset((page - 1) * limit)
+      .limit(limit)
+      .getManyAndCount();
+
+    return result;
+  }
+
   async findRepo(repoId) {
     const result = await this.repoRepository.findOne({
       where: {
