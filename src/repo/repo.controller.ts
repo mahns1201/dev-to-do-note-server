@@ -14,6 +14,7 @@ import {
 import {
   ApiBearerAuth,
   ApiHeader,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -23,8 +24,9 @@ import { UserService } from 'src/user/user.service';
 import { AuthGuard } from 'src/auth/jwt/auth.guard';
 import { User } from 'src/decorator/user.decorator';
 import { jwtUserT } from 'src/constant/jwt.constant';
-import { OutputFindReposDto } from './dto/find-repo.dto';
-import { PagingRequestDto } from 'src/common/common.dto';
+import { OutputFindReposDto, OutputReposDto } from './dto/find-repo.dto';
+import { ErrorResponseDto, PagingRequestDto } from 'src/common/common.dto';
+import { RepoEntity } from './entity/repo.entity';
 
 @Controller('repo')
 @UseGuards(AuthGuard)
@@ -43,10 +45,14 @@ export class RepoController {
     type: OutputFindReposDto,
     status: HttpStatus.OK,
   })
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+    status: HttpStatus.NOT_FOUND,
+  })
   async findUserRepos(
     @User() user: jwtUserT,
     @Query() query: PagingRequestDto,
-  ): Promise<OutputFindReposDto> {
+  ) {
     const { page, limit } = query;
     const { items, totalCount } = await this.repoService.find({
       id: user.id,

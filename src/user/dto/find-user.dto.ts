@@ -2,7 +2,7 @@ import { BaseResponseDto } from 'src/common/common.dto';
 import { UserDto } from './user.dto';
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 
-export class OutputUserDto extends OmitType(UserDto, [
+class OutputUserDto extends OmitType(UserDto, [
   'password',
   'githubAccessToken',
 ] as const) {}

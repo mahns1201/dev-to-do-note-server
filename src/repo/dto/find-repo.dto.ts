@@ -1,7 +1,9 @@
 import { PagingResponseDto } from 'src/common/common.dto';
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { UserDto } from 'src/user/dto/user.dto';
-import { RepoEntity } from '../entity/repo.entity';
+import { RepoDto } from './repo.dto';
+
+export class OutputReposDto extends OmitType(RepoDto, ['user'] as const) {}
 
 export class InputFindReposDto extends PickType(UserDto, ['id'] as const) {
   page: number;
@@ -9,5 +11,5 @@ export class InputFindReposDto extends PickType(UserDto, ['id'] as const) {
 }
 export class OutputFindReposDto extends PagingResponseDto {
   @ApiProperty({ isArray: true })
-  items: RepoEntity[];
+  items: OutputReposDto;
 }

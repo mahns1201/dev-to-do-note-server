@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { REQUEST_INFO } from 'src/common/request-url';
 import { Repository } from 'typeorm';
 import { RepoEntity } from './entity/repo.entity';
@@ -43,6 +43,10 @@ export class RepoService {
       .offset((page - 1) * limit)
       .limit(limit)
       .getManyAndCount();
+
+    if (!repos.length) {
+      throw new NotFoundException(`${page}p에 발견된 레포지토리가 없습니다.`);
+    }
 
     return {
       items: repos,
