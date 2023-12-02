@@ -52,17 +52,8 @@ let UserService = class UserService {
     }
     async getGithubAccessToken(input) {
         const { id } = input;
-        const { githubAccessToken } = await this.userRepository.findOne({
-            where: {
-                id,
-                deletedAt: null,
-            },
-        });
-        if (!githubAccessToken) {
-            common_1.Logger.error(`유저 ${id}의 githubAccessToken을 얻을 수 없습니다.`);
-            throw new common_1.UnauthorizedException(`유저 ${id}의 githubAccessToken을 얻을 수 없습니다.`);
-        }
-        return { item: githubAccessToken };
+        const { item: user } = await this.findOne({ id });
+        return { item: user === null || user === void 0 ? void 0 : user.githubAccessToken };
     }
     async findUser(input) {
         const { email } = input;
