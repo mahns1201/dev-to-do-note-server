@@ -46,9 +46,9 @@ export class RepoController {
   async findUserRepos(
     @User() user: jwtUserT,
     @Query() query: PagingRequestDto,
-  ) {
+  ): Promise<OutputFindReposDto> {
     const { page, limit } = query;
-    const [userRepos, totalCount] = await this.repoService.find({
+    const { items, totalCount } = await this.repoService.find({
       id: user.id,
       page,
       limit,
@@ -56,11 +56,11 @@ export class RepoController {
 
     return {
       httpStatus: HttpStatus.OK,
-      message: '레포지토리 리스트를 성공적으로 조회했습니다.',
-      items: { userRepos },
+      message: `${page}p 레포지토리 리스트를 성공적으로 조회했습니다.`,
       currentPage: page,
       limit,
       totalCount,
+      items,
     };
   }
 

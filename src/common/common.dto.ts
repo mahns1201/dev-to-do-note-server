@@ -55,6 +55,11 @@ export interface ServiceResultDto<T> {
   item?: T;
 }
 
+export interface ServicePagingResultDto<T> {
+  items?: T;
+  totalCount: number;
+}
+
 /**
  * @deprecated
  */

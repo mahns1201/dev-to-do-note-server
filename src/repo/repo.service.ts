@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RepoBranchEntity } from './entity/repo-branch.entity';
 import { Octokit } from 'octokit';
 import { InputFindReposDto } from './dto/find-repo.dto';
+import { ServicePagingResultDto } from 'src/common/common.dto';
 
 @Injectable()
 export class RepoService {
@@ -31,17 +32,22 @@ export class RepoService {
     return { item: savedRepo };
   }
 
-  async find(input: InputFindReposDto) {
+  async find(
+    input: InputFindReposDto,
+  ): Promise<ServicePagingResultDto<RepoEntity[]>> {
     const { id: userId, page, limit } = input;
 
-    const result = await this.repoRepository
+    const [repos, totalCount] = await this.repoRepository
       .createQueryBuilder('repo')
       .where('userId = :userId', { userId })
       .offset((page - 1) * limit)
       .limit(limit)
       .getManyAndCount();
 
-    return result;
+    return {
+      items: repos,
+      totalCount,
+    };
   }
 
   async findRepo(repoId) {
