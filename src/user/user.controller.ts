@@ -4,7 +4,6 @@ import {
   HttpCode,
   HttpStatus,
   NotFoundException,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -27,7 +26,6 @@ import { jwtUserT } from 'src/constant/jwt.constant';
 @ApiTags('USER')
 export class UserController {
   constructor(private userService: UserService) {}
-
   @Get()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
