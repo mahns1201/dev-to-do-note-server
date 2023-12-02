@@ -8,7 +8,9 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -34,6 +36,10 @@ export class UserController {
     type: OutputFindUserDto,
     status: HttpStatus.OK,
   })
+  @ApiBadRequestResponse({
+    type: ErrorResponseDto,
+    status: HttpStatus.BAD_REQUEST,
+  })
   @ApiUnauthorizedResponse({
     type: ErrorResponseDto,
     status: HttpStatus.UNAUTHORIZED,
@@ -41,6 +47,14 @@ export class UserController {
   @ApiNotFoundResponse({
     type: ErrorResponseDto,
     status: HttpStatus.NOT_FOUND,
+  })
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+    status: HttpStatus.NOT_FOUND,
+  })
+  @ApiInternalServerErrorResponse({
+    type: ErrorResponseDto,
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
   })
   async findOne(@User() jUser: jwtUserT): Promise<OutputFindUserDto> {
     const { id } = jUser;
