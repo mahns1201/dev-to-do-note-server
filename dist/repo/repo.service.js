@@ -26,13 +26,18 @@ let RepoService = class RepoService {
         this.repoBranchRepository = repoBranchRepository;
     }
     async create(input) {
-        const { user, repoName } = input;
-        const newRepo = this.repoRepository.create({
-            user,
-            repoName,
-        });
+        const { userId, repoName } = input;
+        const newRepo = this.repoRepository.create(Object.assign({ user: userId }, input));
         const savedRepo = await this.repoRepository.save(newRepo);
+        common_1.Logger.log(`유저 ${userId}, 레포지토리: ${repoName} 생성 완료`);
         return { item: savedRepo };
+    }
+    async createBranch(input) {
+        const { repoId, branchName } = input;
+        const newBranch = this.repoBranchRepository.create(Object.assign({ repo: repoId }, input));
+        const savedBranch = await this.repoBranchRepository.save(newBranch);
+        common_1.Logger.log(`브랜치 ${repoId}, 레포지토리: ${branchName} 생성 완료`);
+        return { item: savedBranch };
     }
     async find(input) {
         const { id: userId, page, limit } = input;
@@ -68,14 +73,6 @@ let RepoService = class RepoService {
         });
         return result;
     }
-    async findReposByUserId(user) {
-        const result = await this.repoRepository.findAndCount({
-            where: {
-                user,
-            },
-        });
-        return result;
-    }
     async findRepoByUserIdAndRepoName(userId, repoName) {
         const queryBuilder = this.repoRepository
             .createQueryBuilder('repo')
@@ -104,14 +101,6 @@ let RepoService = class RepoService {
         });
         return result;
     }
-    async syncUserRepo(user, userRepo) {
-        const newUserRepo = this.repoRepository.create({
-            user,
-            repoName: userRepo,
-        });
-        const result = await this.repoRepository.save(newUserRepo);
-        return { item: result };
-    }
     async syncRepoBranch(repoId, branchName) {
         const newRepoBranch = this.repoBranchRepository.create({
             repo: repoId,
@@ -132,7 +121,19 @@ let RepoService = class RepoService {
                 }
             });
             if (sync) {
-                const { item } = await this.syncUserRepo(userId, userGithubRepo.name);
+                const { name: repoName, description, language, default_branch: defaultBranch, owner: { avatar_url: ownerAvatarUrl }, html_url: htmlUrl, private: isPrivate, fork: isFork, } = userGithubRepo;
+                const { item } = await this.create({
+                    userId,
+                    repoName,
+                    description,
+                    language,
+                    defaultBranch,
+                    ownerAvatarUrl,
+                    htmlUrl,
+                    isPrivate,
+                    isFork,
+                    synchronizedAt: new Date(),
+                });
                 if (item) {
                     syncCount++;
                     syncRepoNames.push(userGithubRepo.name);
@@ -154,7 +155,11 @@ let RepoService = class RepoService {
                 }
             });
             if (sync) {
-                const { item } = await this.syncRepoBranch(repoId, githubRepoBranch.name);
+                const { name: branchName } = githubRepoBranch;
+                const { item } = await this.createBranch({
+                    repoId,
+                    branchName,
+                });
                 if (item) {
                     syncCount++;
                     syncBranchNames.push(githubRepoBranch.name);

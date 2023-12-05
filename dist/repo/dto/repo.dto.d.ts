@@ -9,4 +9,5 @@ export declare class RepoDto extends BaseTimeDto {
     isPrivate: boolean;
     htmlUrl: string;
     description: string;
+    synchronizedAt: string;
 }

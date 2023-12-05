@@ -8,20 +8,19 @@ export declare class RepoService {
     private repoBranchRepository;
     constructor(repoRepository: Repository<RepoEntity>, repoBranchRepository: Repository<RepoBranchEntity>);
     create(input: any): Promise<{
-        item: RepoEntity;
+        item: RepoEntity[];
+    }>;
+    createBranch(input: any): Promise<{
+        item: RepoBranchEntity[];
     }>;
     find(input: InputFindReposDto): Promise<ServicePagingResultDto<RepoEntity[]>>;
     findAll(input: InputFindAllReposDto): Promise<ServiceResultDto<RepoEntity[]>>;
     findRepo(repoId: any): Promise<RepoEntity>;
-    findReposByUserId(user: any): Promise<[RepoEntity[], number]>;
     findRepoByUserIdAndRepoName(userId: any, repoName: any): Promise<{
         item: RepoEntity;
     }>;
     findRepoBranch(repoBranchId: any): Promise<RepoBranchEntity>;
     findRepoBranchesByRepoId(repoId: any): Promise<RepoBranchEntity[]>;
-    syncUserRepo(user: any, userRepo: any): Promise<{
-        item: RepoEntity;
-    }>;
     syncRepoBranch(repoId: any, branchName: any): Promise<{
         item: RepoBranchEntity;
     }>;

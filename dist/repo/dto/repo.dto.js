@@ -69,5 +69,11 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], RepoDto.prototype, "description", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsDate)(),
+    __metadata("design:type", String)
+], RepoDto.prototype, "synchronizedAt", void 0);
 exports.RepoDto = RepoDto;
 //# sourceMappingURL=repo.dto.js.map
