@@ -4,12 +4,12 @@ export declare class RepoEntity extends BaseEntity {
     id: number;
     user: UserEntity;
     repoName: string;
-    description: string;
-    language: string;
     defaultBranch: string;
-    ownerAvatarUrl: string;
     htmlUrl: string;
     isPrivate: boolean;
     isFork: boolean;
+    description: string;
+    language: string;
+    ownerAvatarUrl: string;
     synchronizedAt: Date;
 }

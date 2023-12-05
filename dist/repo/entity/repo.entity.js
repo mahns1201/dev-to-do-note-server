@@ -30,6 +30,22 @@ __decorate([
     __metadata("design:type", String)
 ], RepoEntity.prototype, "repoName", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], RepoEntity.prototype, "defaultBranch", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], RepoEntity.prototype, "htmlUrl", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Boolean)
+], RepoEntity.prototype, "isPrivate", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Boolean)
+], RepoEntity.prototype, "isFork", void 0);
+__decorate([
     (0, typeorm_1.Column)({ nullable: true, type: 'text' }),
     __metadata("design:type", String)
 ], RepoEntity.prototype, "description", void 0);
@@ -40,23 +56,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
-], RepoEntity.prototype, "defaultBranch", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", String)
 ], RepoEntity.prototype, "ownerAvatarUrl", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", String)
-], RepoEntity.prototype, "htmlUrl", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", Boolean)
-], RepoEntity.prototype, "isPrivate", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", Boolean)
-], RepoEntity.prototype, "isFork", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Date)

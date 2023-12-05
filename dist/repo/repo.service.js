@@ -76,7 +76,7 @@ let RepoService = class RepoService {
     async findRepoByUserIdAndRepoName(userId, repoName) {
         const queryBuilder = this.repoRepository
             .createQueryBuilder('repo')
-            .where('userId = :userId & repoName = :repoName', { userId, repoName });
+            .where('userId = :userId AND repoName = :repoName', { userId, repoName });
         const userRepo = await queryBuilder.getOne();
         if (!userRepo) {
             throw new common_1.NotFoundException(`${repoName}으로 발견된 레포지토리가 없습니다.`);
@@ -173,7 +173,7 @@ let RepoService = class RepoService {
         const octokit = new octokit_1.Octokit({
             auth: githubAccessToken,
         });
-        const { data: result } = await octokit.request('GET /users/{username}/repos', {
+        const { data: result } = await octokit.request('GET /user/repos', {
             username,
             headers: {
                 'X-GitHub-Api-Version': request_url_1.REQUEST_INFO.GITHUB.API_VERSION,
@@ -198,14 +198,19 @@ let RepoService = class RepoService {
         const octokit = new octokit_1.Octokit({
             auth: githubAccessToken,
         });
-        const { data: result } = await octokit.request('GET /repos/{owner}/{repo}/branches', {
-            owner,
-            repo,
-            headers: {
-                'X-GitHub-Api-Version': request_url_1.REQUEST_INFO.GITHUB.API_VERSION,
-            },
-        });
-        return result;
+        try {
+            const { data: result } = await octokit.request('GET /repos/{owner}/{repo}/branches', {
+                owner,
+                repo,
+                headers: {
+                    'X-GitHub-Api-Version': request_url_1.REQUEST_INFO.GITHUB.API_VERSION,
+                },
+            });
+            return result;
+        }
+        catch (error) {
+            common_1.Logger.error(error);
+        }
     }
 };
 RepoService = __decorate([

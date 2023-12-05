@@ -3,11 +3,12 @@ export declare class RepoDto extends BaseTimeDto {
     id: number;
     user: number;
     repoName: string;
-    language: string;
-    imageUrl: string;
     defaultBranch: string;
     isPrivate: boolean;
+    isFork: boolean;
     htmlUrl: string;
+    language: string;
+    imageUrl: string;
     description: string;
     synchronizedAt: string;
 }

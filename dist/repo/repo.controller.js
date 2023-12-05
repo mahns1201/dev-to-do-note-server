@@ -58,6 +58,9 @@ let RepoController = class RepoController {
         }
         for (const repoName of syncRepoNames) {
             const githubRepoBranches = await this.repoService.getRepoBranchesFromGithub(githubAccessToken, username, repoName);
+            if (!githubRepoBranches || !githubRepoBranches.length) {
+                continue;
+            }
             const { item: { id: repoId }, } = await this.repoService.findRepoByUserIdAndRepoName(userId, repoName);
             const repoBranches = await this.repoService.findRepoBranchesByRepoId(repoId);
             const { item: { syncBranchNames }, } = await this.repoService.syncRepoBranches(repoId, githubRepoBranches, repoBranches);
