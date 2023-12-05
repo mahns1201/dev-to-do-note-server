@@ -15,7 +15,7 @@ export class RepoEntity extends BaseEntity {
   @IsNotEmpty()
   repoName: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'text' })
   description: string;
 
   @Column({ nullable: true })
