@@ -14,7 +14,6 @@ import { RepoModule } from './repo/repo.module';
 import { AuthModule } from './auth/jwt/auth.module';
 import { TaskModule } from './task/task.module';
 import { UploadModule } from './upload/upload.module';
-import { ProjectModule } from './project/project.module';
 import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
@@ -58,7 +57,6 @@ export class LoggerMiddleware implements NestMiddleware {
     UserModule,
     RepoModule,
     TaskModule,
-    ProjectModule,
     UploadModule,
   ],
   controllers: [],
