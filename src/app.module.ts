@@ -15,6 +15,7 @@ import { AuthModule } from './auth/jwt/auth.module';
 import { TaskModule } from './task/task.module';
 import { UploadModule } from './upload/upload.module';
 import { NextFunction, Request, Response } from 'express';
+import { SprintModule } from './sprint/sprint.module';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
@@ -56,6 +57,7 @@ export class LoggerMiddleware implements NestMiddleware {
     GithubOauthModule,
     UserModule,
     RepoModule,
+    SprintModule,
     TaskModule,
     UploadModule,
   ],
