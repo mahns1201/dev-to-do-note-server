@@ -1,5 +1,7 @@
-import { OmitType } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { SprintDto } from './sprint.dto';
+import { BaseResponseDto } from 'src/common/common.dto';
+import { SprintEntity } from '../entity/sprint.entity';
 
 export class InputCreateSprintDto extends OmitType(SprintDto, [
   'id',
@@ -8,4 +10,7 @@ export class InputCreateSprintDto extends OmitType(SprintDto, [
   'updatedAt',
   'deletedAt',
 ] as const) {}
-// export class OutputCreateUserDto extends SwaggerResponseDto<SprintDto> {}
+export class OutputCreateSprintDto extends BaseResponseDto {
+  @ApiProperty()
+  item: SprintEntity;
+}
