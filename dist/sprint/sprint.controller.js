@@ -75,7 +75,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)('/list'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: '유저의 레포지토리 리스트를 조회한다.' }),
+    (0, swagger_1.ApiOperation)({ summary: '유저의 스프린트 리스트를 조회한다.' }),
     (0, swagger_1.ApiOkResponse)({
         type: find_sprint_dto_1.OutputFindSprintsDto,
         status: common_1.HttpStatus.OK,

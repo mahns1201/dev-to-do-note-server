@@ -31,7 +31,9 @@ let SprintService = class SprintService {
         const { id: userId, page, limit } = input;
         const queryBuilder = this.sprintRepository
             .createQueryBuilder('sprint')
-            .where('userId = :userId', { userId })
+            .leftJoinAndSelect('sprint.user', 'user')
+            .leftJoinAndSelect('sprint.repo', 'repo')
+            .where('sprint.userId = :userId', { userId })
             .offset((page - 1) * limit)
             .limit(limit);
         const [sprints, totalCount] = await queryBuilder.getManyAndCount();

@@ -23,10 +23,12 @@ __decorate([
 ], SprintEntity.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.UserEntity, (user) => user.id),
+    (0, typeorm_1.JoinColumn)({ name: 'userId' }),
     __metadata("design:type", user_entity_1.UserEntity)
 ], SprintEntity.prototype, "user", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => repo_entity_1.RepoEntity, (repo) => repo.id),
+    (0, typeorm_1.JoinColumn)({ name: 'repoId' }),
     __metadata("design:type", repo_entity_1.RepoEntity)
 ], SprintEntity.prototype, "repo", void 0);
 __decorate([
