@@ -9,12 +9,19 @@ import {
 } from 'src/common/common.dto';
 import { RepoEntity } from 'src/repo/entity/repo.entity';
 import { InputFindSprintsDto } from './dto/find-sprint.dto';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 @Injectable()
 export class SprintService {
   constructor(
     @InjectRepository(SprintEntity)
     private sprintRepository: Repository<SprintEntity>,
+
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+
+    @InjectRepository(RepoEntity)
+    private repoRepository: Repository<RepoEntity>,
   ) {}
 
   async create(
@@ -41,7 +48,9 @@ export class SprintService {
 
     const queryBuilder = this.sprintRepository
       .createQueryBuilder('sprint')
-      .where('userId = :userId', { userId })
+      // .leftJoinAndSelect('sprint.user', 'user')
+      .leftJoinAndSelect('sprint.repo', 'repo')
+      .where('sprint.userId = :userId', { userId })
       .offset((page - 1) * limit)
       .limit(limit);
 
