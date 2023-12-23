@@ -39,3 +39,6 @@ db/*
 
 # envs
 config/*.env
+
+# deploy
+src/*
