@@ -90,7 +90,7 @@ export class SprintController {
 
   @Get('/list')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: '유저의 레포지토리 리스트를 조회한다.' })
+  @ApiOperation({ summary: '유저의 스프린트 리스트를 조회한다.' })
   @ApiOkResponse({
     type: OutputFindSprintsDto,
     status: HttpStatus.OK,
