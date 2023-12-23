@@ -16,7 +16,7 @@ const repo_module_1 = require("./repo/repo.module");
 const auth_module_1 = require("./auth/jwt/auth.module");
 const task_module_1 = require("./task/task.module");
 const upload_module_1 = require("./upload/upload.module");
-const project_module_1 = require("./project/project.module");
+const sprint_module_1 = require("./sprint/sprint.module");
 let LoggerMiddleware = class LoggerMiddleware {
     constructor() {
         this.logger = new common_1.Logger('HTTP');
@@ -63,8 +63,8 @@ AppModule = __decorate([
             github_oauth_module_1.GithubOauthModule,
             user_module_1.UserModule,
             repo_module_1.RepoModule,
+            sprint_module_1.SprintModule,
             task_module_1.TaskModule,
-            project_module_1.ProjectModule,
             upload_module_1.UploadModule,
         ],
         controllers: [],

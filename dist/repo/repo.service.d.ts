@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { RepoEntity } from './entity/repo.entity';
 import { RepoBranchEntity } from './entity/repo-branch.entity';
-import { InputFindAllReposDto, InputFindReposDto } from './dto/find-repo.dto';
+import { InputFindAllReposDto, InputFindRepoDto, InputFindReposDto } from './dto/find-repo.dto';
 import { ServicePagingResultDto, ServiceResultDto } from 'src/common/common.dto';
 export declare class RepoService {
     private repoRepository;
@@ -15,6 +15,7 @@ export declare class RepoService {
     }>;
     find(input: InputFindReposDto): Promise<ServicePagingResultDto<RepoEntity[]>>;
     findAll(input: InputFindAllReposDto): Promise<ServiceResultDto<RepoEntity[]>>;
+    findOne(input: InputFindRepoDto): Promise<ServiceResultDto<RepoEntity>>;
     findRepo(repoId: any): Promise<RepoEntity>;
     findRepoByUserIdAndRepoName(userId: any, repoName: any): Promise<{
         item: RepoEntity;

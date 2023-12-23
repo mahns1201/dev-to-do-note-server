@@ -65,6 +65,13 @@ let RepoService = class RepoService {
             items: repos,
         };
     }
+    async findOne(input) {
+        const { id } = input;
+        const repo = await this.repoRepository.findOne({
+            where: { id },
+        });
+        return { item: repo };
+    }
     async findRepo(repoId) {
         const result = await this.repoRepository.findOne({
             where: {
